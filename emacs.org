@@ -44,6 +44,7 @@
   ;; Disable line numbers for some modes
   (dolist (mode '(org-mode-hook
                   term-mode-hook
+		   treemacs-mode-hook
                   shell-mode-hook
                   eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
@@ -373,8 +374,7 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
      :custom
      (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-   ;;(use-package evil-magit
-   ;;  :after magit)
+   ;; (use-package evil-magit :after magit)
 
  #+end_src
 
