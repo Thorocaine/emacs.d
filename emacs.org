@@ -12,6 +12,24 @@ The following variables are used to tweak some of the configuration pieces for u
 
 In this document I've added links in many places that lead you to documentation for the various packages we use.  If you're looking at this file in Emacs, you can put your cursor on a link and press =C-c C-o= or run =M-x org-open-at-point= to open the link in your web browser.
 
+* Startup Performance
+
+#+begin_src emacs-lisp
+
+  ;; The default is 800 kilobytes.  Measured in bytes.
+  (setq gc-cons-threshold (* 50 1000 1000))
+
+  (defun efs/display-startup-time ()
+    (message "⏱ Emacs loaded in %s with %d garbage collections."
+             (format "%.2f seconds"
+                     (float-time
+                       (time-subtract after-init-time before-init-time)))
+             gcs-done))
+
+  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+
+#+end_src
+
 * Package System Setup
 
 #+begin_src emacs-lisp
@@ -34,6 +52,44 @@ In this document I've added links in many places that lead you to documentation 
   (setq use-package-always-ensure t)
 
  #+end_src
+ 
+** Automatic Package Updates
+
+The auto-package-update package helps us keep our Emacs packages up to date!  It will prompt you after a certain number of days either at startup or at a specific time of day to remind you to update your packages.
+
+You can also use =M-x auto-package-update-now= to update right now!
+
+#+begin_src emacs-lisp
+
+   (use-package auto-package-update
+     :custom
+     (auto-package-update-interval 7)
+     (auto-package-update-prompt-before-update t)
+     (auto-package-update-hide-results t)
+     :config
+     (auto-package-update-maybe)
+     (auto-package-update-at-time "09:00"))
+
+#+end_src
+
+* Keep Folders Clean
+
+We use the [[https://github.com/emacscollective/no-littering/blob/master/no-littering.el][no-littering]] package to keep folders where we edit files and the Emacs configuration folder clean!  It knows about a wide variety of variables for built in Emacs features as well as those from community packages so it can be much easier than finding and setting these variables yourself.
+
+#+begin_src emacs-lisp
+
+  ;; NOTE: If you want to move everything out of the ~/.emacs.d folder
+  ;; reliably, set `user-emacs-directory` before loading no-littering!
+  ;(setq user-emacs-directory "~/.cache/emacs")
+
+  (use-package no-littering)
+
+  ;; no-littering doesn't set this by default so we must place
+  ;; auto save files in the same path as it uses for sessions
+  (setq auto-save-file-name-transforms
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+
+#+end_src
 
 * Basic UI Configuration
 
@@ -700,7 +756,6 @@ Emacs' built in commenting functionality =comment-dwim= (usually bound to =M-;=)
 
 #+end_src
 
-
 * Terminals
 ** Powershell
 
@@ -853,7 +908,6 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
     (eshell-git-prompt-use-theme 'powerline))
 
 #+end_src
-
 
 
 * File Management
