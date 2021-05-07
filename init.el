@@ -89,6 +89,7 @@
       (rune/leader-keys
         "t"  '(:ignore t :which-key "toggles")
         "tt" '(counsel-load-theme :which-key "choose theme")
+        "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))
         "e"  '(:ignore t :which-key "eval")
         "eb" 'eval-buffer
         "es" 'eval-last-sexp
