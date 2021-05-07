@@ -80,6 +80,7 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
   (use-package general
+    :after evil
     :config
       (general-create-definer rune/leader-keys
         :keymaps '(normal insert visual emacs)
@@ -136,9 +137,10 @@
   :custom ((doom-modeline-height 15)))
 
 (use-package which-key
-  :init (which-key-mode)
+  :defer 0
   :diminish which-key-mode
   :config
+  (which-key-mode)
   (setq which-key-idle-delay 1))
 
 ;; ;; Ivy Configuration -----------------------------------------------------------
@@ -162,6 +164,7 @@
   )
 
 (use-package ivy-rich
+  :after ivy
   :init (ivy-rich-mode 1)
    )
 
@@ -174,18 +177,20 @@
    )
 
 (use-package helpful
+  :commands (helpful-callable helpful-variable helpful-command helpful-key)
   :custom
-    (counsel-describe-function-function #'helpful-callable)
-    (counsel-describe-variable-function #'helpful-variable)
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
   :bind
-    ([remap describe-function] . helpful-function)
-    ([remap describe-symbol]   . helpful-symbol)
-    ([remap describe-variable] . helpful-variable)
-    ([remap describe-command]  . helpful-command)
-    ([remap describe-key]      . helpful-key)
-    )
+  ([remap describe-function] . helpful-function)
+  ([remap describe-symbol]   . helpful-symbol)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-command]  . helpful-command)
+  ([remap describe-key]      . helpful-key)
+  )
 
-(use-package hydra)
+(use-package hydra
+  :defer t)
 
 (defhydra hydra-text-scale (:timeout 4)
   "scale text"
@@ -234,6 +239,8 @@
   (visual-line-mode 1))
 
 (use-package org
+  :pin org
+  :commands (org-capture org-agenda)
   :hook (org-mode . efs/org-mode-setup)
   :config
   ;; (add-hook 'org-mode-hook #'valign-mode)
@@ -377,19 +384,24 @@
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
-(org-babel-do-load-languages
-  'org-babel-load-languages
-  '((emacs-lisp . t)
-    (python . t)))
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)))
 
-(push '("conf-unix" . conf-unix) org-src-lang-modes)
+  (push '("conf-unix" . conf-unix) org-src-lang-modes)
+  )
 
 ;; This is needed as of Org 9.2
-(require 'org-tempo)
 
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (with-eval-after-load 'org
+  (require 'org-tempo)
+
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+)
 
 ;; Automatically tangle our Emacs.org config file when we save it
 (defun efs/org-babel-tangle-config ()
@@ -421,7 +433,26 @@
 (use-package lsp-treemacs
   :after lsp)
 
-(use-package lsp-ivy)
+(use-package lsp-ivy
+  :after lsp)
+
+(use-package dap-mode
+  ;; Uncomment the config below if you want all UI panes to be hidden by default!
+  ;; :custom
+  ;; (lsp-enable-dap-auto-configure nil)
+  ;; :config
+  ;; (dap-ui-mode 1)
+  :commands dap-debug
+  :config
+  ;; Set up Node debugging
+  (require 'dap-node)
+  (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+
+  ;; Bind `C-c l d` to `dap-hydra` for easy access
+  (general-define-key
+    :keymaps 'lsp-mode-map
+    :prefix lsp-keymap-prefix
+    "d" '(dap-hydra t :wk "debugger")))
 
 (use-package typescript-mode
   :mode "\\.ts\\'"
@@ -444,6 +475,7 @@
   )
 
 (use-package counsel-projectile
+  :after projectile
   :config (counsel-projectile-mode))
 
 (use-package company
@@ -461,8 +493,10 @@
   :hook (company-mode . company-box-mode))
 
 (use-package magit
+  :commands magit-status
   :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  )
 
 ;; (use-package evil-magit :after magit)
 
@@ -483,6 +517,7 @@
 ;; (setq explicit-powershell.exe-args '("-Command" "-" )) ; interactive, but no command prompt 
 
 (use-package term
+  :commands term
   :config
   (setq explicit-shell-file-name "c:/windows/system32/WindowsPowerShell/v1.0/powershell.exe -Command -")
   (setq explicit-powershell.exe-args '("-Command" "-" )) ; interactive, but no command prompt 
@@ -524,7 +559,7 @@
         eshell-hist-ignoredups t
         eshell-scroll-to-bottom-on-input t))
 
-(use-package eshell-git-prompt)
+(use-package eshell-git-prompt :after eshell)
 
 (use-package eshell
   :hook (eshell-first-time-mode . efs/configure-eshell)
@@ -546,12 +581,13 @@
       "h" 'dired-single-up-directory
       "l" 'dired-single-buffer))
 
-  (use-package dired-single)
+  (use-package dired-single :after dired)
 
   (use-package all-the-icons-dired
     :hook (dired-mode . all-the-icons-dired-mode))
 
   (use-package dired-open
+  :after dired
     :config
     ;; Doesn't work as expected!
     ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
