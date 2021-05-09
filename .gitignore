@@ -1,0 +1,19 @@
+.cache
+.last-package-update-day
+.log
+.lsp-session-v1
+CapsLockHack.reg
+bookmarks
+elpa
+emacs.org~
+eshell
+init - Copy.el
+init-new.el
+init.el~
+projectile-bookmarks.eld
+test.1.ts
+test.1.ts~
+test.ts
+test.ts~
+transient
+var
