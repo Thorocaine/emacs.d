@@ -1,3 +1,10 @@
+(defun my/org-dir ()
+  (pcase system-type
+    ('windows-nt "~/Dropbox/Apps/MobileOrg/")
+    ('gnu/linux  "/mnt/c/Users/me/Dropbox/Apps/MobileOrg/")
+    )
+  )
+
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 100 1000 1000))
 
@@ -85,14 +92,16 @@
   ;;   )
 
 (defun my/open (a)
-  "Open File"
   (find-file (expand-file-name a))
   (message "Open")
   )
 
-  (defun my/org-index () (interactive) (my/open "~/Dropbox/Apps/MobileOrg/index.org") )
-  (defun my/sleep () (interactive) (my/open "~/Dropbox/Apps/MobileOrg/sleep.org") )
-  (defun my/work-out () (interactive) (my/open "~/Dropbox/Apps/MobileOrg/workout.org") )
+(defun my/open-org (name) (my/open (concat (my/org-dir) name)))
+
+
+  (defun my/org-index () (interactive) (my/open-org "index.org") )
+  (defun my/sleep () (interactive) (my/open-org "sleep.org") )
+  (defun my/work-out () (interactive) (my/open-org "workout.org") )
 
 
       (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -120,7 +129,7 @@
               "aofw" 'my/work-out
               "aoa" 'org-agenda
                "g"  '(:ignore t :which-key "git")
-	     "gs" 'magit-status
+             "gs" 'magit-status
               )
          )
 

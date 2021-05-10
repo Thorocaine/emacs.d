@@ -8,6 +8,19 @@ This is the configuration we've been building in the *Emacs From Scratch* series
 
 The following variables are used to tweak some of the configuration pieces for use in the live streams so you might need to adjust them for your local machine if you try to use this configuration directly.
 
+* Custom Stuffs
+#+begin_src emacs-lisp
+
+  (defun my/org-dir ()
+    (pcase system-type
+      ('windows-nt "~/Dropbox/Apps/MobileOrg/")
+      ('gnu/linux  "/mnt/c/Users/me/Dropbox/Apps/MobileOrg/")
+      )
+    )
+
+#+end_src
+
+
 * Tips for Use
 
 In this document I've added links in many places that lead you to documentation for the various packages we use.  If you're looking at this file in Emacs, you can put your cursor on a link and press =C-c C-o= or run =M-x org-open-at-point= to open the link in your web browser.
@@ -145,14 +158,16 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
     ;;   )
 
   (defun my/open (a)
-    "Open File"
     (find-file (expand-file-name a))
     (message "Open")
     )
 
-    (defun my/org-index () (interactive) (my/open "~/Dropbox/Apps/MobileOrg/index.org") )
-    (defun my/sleep () (interactive) (my/open "~/Dropbox/Apps/MobileOrg/sleep.org") )
-    (defun my/work-out () (interactive) (my/open "~/Dropbox/Apps/MobileOrg/workout.org") )
+  (defun my/open-org (name) (my/open (concat (my/org-dir) name)))
+
+
+    (defun my/org-index () (interactive) (my/open-org "index.org") )
+    (defun my/sleep () (interactive) (my/open-org "sleep.org") )
+    (defun my/work-out () (interactive) (my/open-org "workout.org") )
 
 
         (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -180,7 +195,7 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
                 "aofw" 'my/work-out
                 "aoa" 'org-agenda
                  "g"  '(:ignore t :which-key "git")
-	       "gs" 'magit-status
+               "gs" 'magit-status
                 )
            )
 
@@ -1075,7 +1090,6 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
 
 #+end_src
 
-
 * Runtime Performance
 
 Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
@@ -1086,3 +1100,5 @@ Dial the GC threshold back down so that garbage collection happens more frequent
   (setq gc-cons-threshold (* 2 1000 1000))
 
 #+end_src
+
+
