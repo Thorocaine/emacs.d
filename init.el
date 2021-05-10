@@ -56,7 +56,7 @@
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
 (defun my/base-font-size ()
-  (pcase system-type ('windows-nt 115) (_ 200)))
+  (pcase system-type ('windows-nt 115) (_ 125)))
 
 (defvar runemacs/default-font-size (my/base-font-size))
 (defvar efs/default-variable-font-size (my/base-font-size))
