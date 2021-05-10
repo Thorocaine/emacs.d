@@ -55,8 +55,11 @@
 (setq auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-(defvar runemacs/default-font-size 115)
-(defvar efs/default-variable-font-size 115)
+(defun my/base-font-size ()
+  (pcase system-type ('windows-nt 115) (_ 200)))
+
+(defvar runemacs/default-font-size (my/base-font-size))
+(defvar efs/default-variable-font-size (my/base-font-size))
 
 (setq inhibit-startup-message t)
 
