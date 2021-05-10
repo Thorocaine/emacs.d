@@ -1,9 +1,8 @@
-(defun my/org-dir ()
-  (pcase system-type
-    ('windows-nt "~/Dropbox/Apps/MobileOrg/")
-    ('gnu/linux  "/mnt/c/Users/me/Dropbox/Apps/MobileOrg/")
-    )
-  )
+(cond
+ ((eq system-type 'windows-nt)
+  (setq my/org-dir "~/Dropbox/Apps/MobileOrg/"))
+  (t (setq my/org-dir "/mnt/c/Users/me/Dropbox/Apps/MobileOrg/"))
+)
 
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 100 1000 1000))
@@ -99,7 +98,9 @@
   (message "Open")
   )
 
-(defun my/open-org (name) (my/open (concat (my/org-dir) name)))
+
+(defun my/org-file (name) (concat my/org-dir name))
+(defun my/open-org (name) (my/open (my/org-file name)))
 
 
   (defun my/org-index () (interactive) (my/open-org "index.org") )
@@ -287,9 +288,10 @@
   (setq org-log-into-drawer t)
 
   (setq org-agenda-files
-        '("~/Dropbox/Apps/MobileOrg/habits.org"
-          "~/Dropbox/Apps/MobileOrg/gtd.org"
-          "~/Dropbox/Apps/MobileOrg/anniversaries.org"
+        (list
+          (concat my/org-dir "habits.org")
+          (concat my/org-dir "gtd.org")
+          (concat my/org-dir "anniversaries.org")
           )
         )
 
