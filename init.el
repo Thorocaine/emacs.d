@@ -1,6 +1,5 @@
 (cond
- ((eq system-type 'windows-nt)
-  (setq my/org-dir "~/Dropbox/Apps/MobileOrg/"))
+ ((eq system-type 'windows-nt) (setq my/org-dir "~/Dropbox/Apps/MobileOrg/"))
   (t (setq my/org-dir "/mnt/c/Users/me/Dropbox/Apps/MobileOrg/"))
 )
 
@@ -237,6 +236,35 @@
 (rune/leader-keys
   "ts" '(hydra-text-scale/body :which-key "scale text"))
 
+(rune/leader-keys
+  "m"  '(:ignore t :which-key "mail & calendar"))
+
+(use-package bbdb
+  :hook bbdb-mode
+  :config
+  (bbdb-initialize 'message)
+  (bbdb-insinuate-message)
+  (add-hook 'message-setup-hook 'bbdb-insinuate-mail)
+  )
+
+(setq my/ical "https://outlook.office365.com/owa/calendar/3a00a6c64cf64207b72d7b78775016a1@polymorphic.group/e9f82d5bb0f549f480359102438444523290467437254753300/calendar.ics")
+
+(defun my/calendar ()
+  (interactive)
+  (cfw:open-ical-calendar my/ical))
+
+(use-package calfw :hook calfw-mode)
+(use-package calfw-ical :after calfw)
+
+(rune/leader-keys
+  "mc" 'my/calendar)
+
+(use-package notmuch :hook notmuch-mode)
+;; set up mail sending using sendmail
+(setq send-mail-function (quote sendmail-send-it))
+(setq user-mail-address "jonathanp@polymorphic.group"
+      user-full-name "Jonathan Peel")
+
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -421,14 +449,23 @@
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
+(setq org-ditaa-jar-path "~/.emacs.d/ditaa.jar")
+(setq org-plantuml-jar-path "~/.emacs.d/plantuml.jar")
+
 (with-eval-after-load 'org
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
-     (python . t)))
+     (ditaa      . t)
+     (plantuml   .t)
+     (python     . t)))
 
   (push '("conf-unix" . conf-unix) org-src-lang-modes)
   )
+
+(use-package plantuml-mode
+  :after org
+)
 
 ;; This is needed as of Org 9.2
 
