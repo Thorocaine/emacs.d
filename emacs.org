@@ -3,6 +3,8 @@
 #+STARTUP: overview
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes~~
 
+
+
 * Welcome!
 
 This is the configuration we've been building in the *Emacs From Scratch* series, now written as an Org Mode document.  This file generates [[file:init.el][init.el]] which can be loaded by Emacs at startup.
@@ -44,25 +46,26 @@ In this document I've added links in many places that lead you to documentation 
 * Package System Setup
 
 #+begin_src emacs-lisp
-
-  ;; Initialize package sources
-  (require 'package)
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")
-                           ("elpa" . "https://elpa.gnu.org/packages/")))
-
-  (package-initialize)
-  (unless package-archive-contents
-    (package-refresh-contents))
-
-  ;; Initialize use-package on non-Linux platforms
-  (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
-
-  (require 'use-package)
-  (setq use-package-always-ensure t)
-  ;; (setq use-package-always-defer t)
-
+  
+    ;; Initialize package sources
+    (require 'package)
+    (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                             ("melpa" . "https://melpa.org/packages/")
+                             ("org" . "https://orgmode.org/elpa/")
+                             ("elpa" . "https://elpa.gnu.org/packages/")))
+  
+    (package-initialize)
+    (unless package-archive-contents
+      (package-refresh-contents))
+  
+    ;; Initialize use-package on non-Linux platforms
+    (unless (package-installed-p 'use-package)
+      (package-install 'use-package))
+  
+    (require 'use-package)
+    (setq use-package-always-ensure t)
+    ;; (setq use-package-always-defer t)
+  
  #+end_src
  
 ** Automatic Package Updates
@@ -144,7 +147,7 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
   (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
   (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
   (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
-  (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Segoe UI Emoji"))
+  (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Noto Color Emoji"))
 
 #+end_src
  
@@ -186,7 +189,7 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
               (rune/leader-keys
                 "t"  '(:ignore t :which-key "toggles")
                 "tt" '(counsel-load-theme :which-key "choose theme")
-                "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))
+                "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/emacs.org")))
                 "e"  '(:ignore t :which-key "eval")
                 "eb" 'eval-buffer
                 "es" 'eval-last-sexp
@@ -450,14 +453,14 @@ This section contains the basic configuration for =org-mode= plus the configurat
 
 
 #+begin_src emacs-lisp
-
+  
   ;; Org Mode Configuration ------------------------------------------------------
-
+  
   (defun efs/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
     (visual-line-mode 1))
-
+  
   (use-package org
     :pin org
     :ensure org-plus-contrib
@@ -467,11 +470,11 @@ This section contains the basic configuration for =org-mode= plus the configurat
     ;; (add-hook 'org-mode-hook #'valign-mode)
     (setq org-ellipsis " ▾"
           org-hide-empasis-markers t)
-
+  
     (setq org-agenda-start-with-log-mode t)
     (setq org-log-date 'time)
     (setq org-log-into-drawer t)
-
+  
     (setq org-agenda-files
           (list
             (concat my/org-dir "habits.org")
@@ -479,24 +482,24 @@ This section contains the basic configuration for =org-mode= plus the configurat
             (concat my/org-dir "anniversaries.org")
             )
           )
-
+  
     (require 'org-habit)
     (add-to-list 'org-modules 'org-habit)
     (setq org-habit-graph-column 60)
-
+  
     (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
         (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
-
+  
     (setq org-refile-targets
       '(("archive.org" :maxlevel . 1)
         ("gtd.org" :maxlevel . 1)
         )
       )
-
+  
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
+  
    (setq org-tag-alist
       '((:startgroup)
          ; Put mutually exclusive tags here
@@ -510,7 +513,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
          ("batch" . ?b)
          ("note" . ?n)
          ("idea" . ?i)))
-
+  
     ;; Configure custom agenda views
     (setq org-agenda-custom-commands
      '(("d" "Dashboard"
@@ -518,19 +521,19 @@ This section contains the basic configuration for =org-mode= plus the configurat
         (todo "NEXT"
           ((org-agenda-overriding-header "Next Tasks")))
         (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
-
+  
       ("n" "Next Tasks"
        ((todo "NEXT"
           ((org-agenda-overriding-header "Next Tasks")))))
-
+  
       ("W" "Work Tasks" tags-todo "+work-email")
-
+  
       ;; Low-effort next actions
       ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
        ((org-agenda-overriding-header "Low Effort Tasks")
         (org-agenda-max-todos 20)
         (org-agenda-files org-agenda-files)))
-
+  
       ("w" "Workflow Status"
        ((todo "WAIT"
               ((org-agenda-overriding-header "Waiting on External")
@@ -558,13 +561,13 @@ This section contains the basic configuration for =org-mode= plus the configurat
         (todo "CANC"
               ((org-agenda-overriding-header "Cancelled Projects")
                (org-agenda-files org-agenda-files)))))))
-
-
+  
+  
      (setq org-capture-templates
       `(("t" "Tasks / Projects")
         ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
              "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-
+  
         ("j" "Journal Entries")
         ("jj" "Journal" entry
              (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
@@ -577,22 +580,22 @@ This section contains the basic configuration for =org-mode= plus the configurat
              "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
              :clock-in :clock-resume
              :empty-lines 1)
-
+  
         ("w" "Workflows")
         ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
              "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
-
+  
         ("m" "Metrics Capture")
         ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
          "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
-
+  
     (define-key global-map (kbd "C-c j")
       (lambda () (interactive) (org-capture nil "jj")))
-
+  
     (efs/org-font-setup)
     )
-
-
+  
+  
 #+end_src
 
 *** Nicer Heading Bullets
@@ -623,7 +626,56 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
     :hook (org-mode . efs/org-mode-visual-fill))
 
 #+end_src
-** Contacts
+** Agenda
+*** Holidays
+#+begin_src emacs-lisp
+  
+    ;; Disable international and religious holidays  
+    (setq holiday-general-holidays nil)
+    (setq holiday-christian-holidays nil)
+    (setq holiday-hebrew-holidays nil)
+    (setq holiday-islamic-holidays nil)
+    (setq holiday-bahai-holidays nil)
+    (setq holiday-oriental-holidays nil)
+  
+    ;; Change these to your location in South Africa
+    ;; useful for sunrise, sunset, equinox, solstice etc.
+    (setq calendar-latitude -26.2041)
+    (setq calendar-longitude 28.0473)
+    (setq calendar-location-name "Johannesburg, Gauteng, South Africa")
+  
+    ;; Republic of South Africa's National Holidays.
+    (setq holiday-local-holidays
+          '((holiday-fixed 1 1 "New Years Day")
+            (holiday-fixed 3 21 "Human Rights Day")
+            (holiday-easter-etc -2 "Good Friday")
+            (holiday-easter-etc +1 "Family Day")
+            (holiday-fixed 4 27 "Freedom Day")
+            (holiday-fixed 5 1 "Workers Day")
+            (holiday-fixed 6 16 "Youth Day in South Africa")
+            (holiday-fixed 8 9 "National Women's Day")
+            (holiday-fixed 9 24 "Heritage Day")
+            (holiday-fixed 12 16 "Day of Reconciliation")
+            (holiday-fixed 12 25 "Christmas Day")
+            (holiday-fixed 12 26 "Day of Goodwill"))
+          )
+  
+  ;; Russian National Holidays
+  (setq calendar-holidays
+        `(
+          (holiday-fixed 1 1 "Новый год")
+          (holiday-fixed 2 23 "День защитника Отечества")
+          (holiday-fixed 3 8 "Международный женский день")
+          (holiday-fixed 5 1 "День труда")
+          (holiday-fixed 5 2 "День труда")
+          (holiday-fixed 5 9 "День Победы")
+          (holiday-fixed 6 12 "День России")
+          (holiday-fixed 10 4 "День Народного единства")
+          ))
+  
+#+end_src
+
+*** Contacts
 
 Setup contact birthdays to show in agenda.  taken from [[https://www.reddit.com/r/emacs/comments/8toivy/tip_how_to_manage_your_contacts_with_orgcontacts/][reddit]].
 

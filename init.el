@@ -17,7 +17,8 @@
 
 ;; Initialize package sources
 (require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
@@ -84,7 +85,7 @@
 (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
 (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
-(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Segoe UI Emoji"))
+(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Noto Color Emoji"))
 
 ;; (defun my/open-index ()
   ;;   "Index"
@@ -120,7 +121,7 @@
             (rune/leader-keys
               "t"  '(:ignore t :which-key "toggles")
               "tt" '(counsel-load-theme :which-key "choose theme")
-              "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))
+              "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/emacs.org")))
               "e"  '(:ignore t :which-key "eval")
               "eb" 'eval-buffer
               "es" 'eval-last-sexp
@@ -451,6 +452,49 @@
 
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
+
+;; Disable international and religious holidays  
+  (setq holiday-general-holidays nil)
+  (setq holiday-christian-holidays nil)
+  (setq holiday-hebrew-holidays nil)
+  (setq holiday-islamic-holidays nil)
+  (setq holiday-bahai-holidays nil)
+  (setq holiday-oriental-holidays nil)
+
+  ;; Change these to your location in South Africa
+  ;; useful for sunrise, sunset, equinox, solstice etc.
+  (setq calendar-latitude -26.2041)
+  (setq calendar-longitude 28.0473)
+  (setq calendar-location-name "Johannesburg, Gauteng, South Africa")
+
+  ;; Republic of South Africa's National Holidays.
+  (setq holiday-local-holidays
+        '((holiday-fixed 1 1 "New Years Day")
+          (holiday-fixed 3 21 "Human Rights Day")
+          (holiday-easter-etc -2 "Good Friday")
+          (holiday-easter-etc +1 "Family Day")
+          (holiday-fixed 4 27 "Freedom Day")
+          (holiday-fixed 5 1 "Workers Day")
+          (holiday-fixed 6 16 "Youth Day in South Africa")
+          (holiday-fixed 8 9 "National Women's Day")
+          (holiday-fixed 9 24 "Heritage Day")
+          (holiday-fixed 12 16 "Day of Reconciliation")
+          (holiday-fixed 12 25 "Christmas Day")
+          (holiday-fixed 12 26 "Day of Goodwill"))
+        )
+
+;; Russian National Holidays
+(setq calendar-holidays
+      `(
+        (holiday-fixed 1 1 "Новый год")
+        (holiday-fixed 2 23 "День защитника Отечества")
+        (holiday-fixed 3 8 "Международный женский день")
+        (holiday-fixed 5 1 "День труда")
+        (holiday-fixed 5 2 "День труда")
+        (holiday-fixed 5 9 "День Победы")
+        (holiday-fixed 6 12 "День России")
+        (holiday-fixed 10 4 "День Народного единства")
+        ))
 
 (use-package org-contacts
   :ensure nil
