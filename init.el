@@ -130,6 +130,8 @@
                "aofi" 'my/org-index
               "aofs" 'my/sleep
               "aofw" 'my/work-out
+              "aox"  '(:ignore t :which-key "export")
+	    "aoxh" 'org-html-export-to-html
               "aoa" 'org-agenda
                "g"  '(:ignore t :which-key "git")
              "gs" 'magit-status
@@ -304,6 +306,7 @@
 
 (use-package org
   :pin org
+  :ensure org-plus-contrib
   :commands (org-capture org-agenda)
   :hook (org-mode . efs/org-mode-setup)
   :config
@@ -448,6 +451,11 @@
 
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
+
+(use-package org-contacts
+  :ensure nil
+  :after org
+  :custom (org-contacts-files (list (my/org-file "contacts.org"))))
 
 (setq org-ditaa-jar-path "~/.emacs.d/ditaa.jar")
 (setq org-plantuml-jar-path "~/.emacs.d/plantuml.jar")

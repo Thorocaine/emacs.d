@@ -1,5 +1,6 @@
 +TITLE Emacs Configuration
 #+AUTHOR: Jonathan Peel
+#+STARTUP: overview
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes~~
 
 * Welcome!
@@ -17,7 +18,6 @@ The following variables are used to tweak some of the configuration pieces for u
   )
 
 #+end_src
-
 
 * Tips for Use
 
@@ -196,6 +196,8 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
                  "aofi" 'my/org-index
                 "aofs" 'my/sleep
                 "aofw" 'my/work-out
+                "aox"  '(:ignore t :which-key "export")
+	      "aoxh" 'org-html-export-to-html
                 "aoa" 'org-agenda
                  "g"  '(:ignore t :which-key "git")
                "gs" 'magit-status
@@ -458,6 +460,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
 
   (use-package org
     :pin org
+    :ensure org-plus-contrib
     :commands (org-capture org-agenda)
     :hook (org-mode . efs/org-mode-setup)
     :config
@@ -468,7 +471,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
     (setq org-agenda-start-with-log-mode t)
     (setq org-log-date 'time)
     (setq org-log-into-drawer t)
-  
+
     (setq org-agenda-files
           (list
             (concat my/org-dir "habits.org")
@@ -620,6 +623,19 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
     :hook (org-mode . efs/org-mode-visual-fill))
 
 #+end_src
+** Contacts
+
+Setup contact birthdays to show in agenda.  taken from [[https://www.reddit.com/r/emacs/comments/8toivy/tip_how_to_manage_your_contacts_with_orgcontacts/][reddit]].
+
+#+begin_src emacs-lisp
+
+  (use-package org-contacts
+    :ensure nil
+    :after org
+    :custom (org-contacts-files (list (my/org-file "contacts.org"))))
+
+#+end_src
+
 ** Configure Babel Languages
 
 To execute or export code in =org-mode= code blocks, you'll need to set up =org-babel-load-languages= for each language you'd like to use.  [[https://orgmode.org/worg/org-contrib/babel/languages.html][This page]] documents all of the languages that you can use with =org-babel=.
