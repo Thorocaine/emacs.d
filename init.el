@@ -85,7 +85,41 @@
 (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
 (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
-(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Noto Color Emoji"))
+
+
+  (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
+
+  (set-fontset-font t 'symbol "Emoji One")
+  (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Emoji One"))
+     ;;(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Cantarell"))
+
+(setq unicode-fonts-block-font-mapping
+      '(("Emoticons" ("Emoji One" "Noto Color Emoji")))
+      unicode-fonts-fontset-names '("fontset-default"))
+
+         ;; ("Apple Color Emoji" "Symbola" "Quivira")))
+
+;; (use-package vertico
+;;   :ensure t
+;;   :bind (:map vertico-map
+;;               ("C-j" . vertico-next)
+;;               ("C-k" . vertico-previous)
+;;               ("C-f" . vertico-exit)
+;;               :map minibuffer-local-map
+;;               ("C-m" . backward-kill-world))
+;;   :custom (vertico-cycle t)
+;;   :init (vertico-mode)
+;;   )
+
+;; (use-package savehist :init (savehist-mode))
+
+;; (use-package marginalia
+;;   :after vertico
+;;   :ensure t
+;;   :custom
+;;   (marginalia-annotator '(marginalia-annotators-heavy marinalia-annotators-light nil))
+;;   :init (marginalia-mode)
+;;   )
 
 ;; (defun my/open-index ()
   ;;   "Index"
@@ -288,14 +322,14 @@
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
   (set-face-attribute 'org-block           nil :foreground nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code            nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim        nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-date            nil :inherit '(shadow fixed-pitch) :height 85)
-  (set-face-attribute 'org-table           nil :inherit '(shadow fixed-pitch) :height 85)
+   (set-face-attribute 'org-code            nil :inherit '(shadow fixed-pitch))
+   (set-face-attribute 'org-verbatim        nil :inherit '(shadow fixed-pitch))
+   (set-face-attribute 'org-date            nil :inherit '(shadow fixed-pitch) :height 85)
+   (set-face-attribute 'org-table           nil :inherit '(shadow fixed-pitch) :height 85)
   (set-face-attribute 'org-formula         nil :inherit '(shadow fixed-pitch) :height 85)
-  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line       nil :inherit '(font-lock-comment-face fixed-pitch) :height 95)
-  (set-face-attribute 'org-checkbox        nil :inherit 'fixed-pitch)
+   (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+   (set-face-attribute 'org-meta-line       nil :inherit '(font-lock-comment-face fixed-pitch) :height 95)
+   (set-face-attribute 'org-checkbox        nil :inherit 'fixed-pitch)
   )
 
 ;; Org Mode Configuration ------------------------------------------------------
@@ -728,3 +762,78 @@
 
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
+
+(with-eval-after-load 'ox-latex
+    (add-to-list 'org-latex-classes
+                 '("org-plain-latex"
+                   "\\documentclass{article}
+           [NO-DEFAULT-PACKAGES]
+           [PACKAGES]
+           [EXTRA]"
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+
+
+
+(setq org-latex-pdf-process
+      '("pdflatex -interaction nonstopmode -output-directory %o %f"
+        "bibtex %b"
+        "pdflatex -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -interaction nonstopmode -output-directory %o %f"))
+
+(setq bibtex-autokey-year-length 4
+      bibtex-autokey-name-year-separator "-"
+      bibtex-autokey-year-title-separator "-"
+      bibtex-autokey-titleword-separator "-"
+      bibtex-autokey-titlewords 2
+      bibtex-autokey-titlewords-stretch 1
+      bibtex-autokey-titleword-length 5)
+
+
+;; (require 'dash)
+;;(setq org-latex-default-packages-alist
+;;      (-remove-item
+;;       '("" "hyperref" nil)
+;;       org-latex-default-packages-alist))
+
+;; Append new packages
+;;(add-to-list 'org-latex-default-packages-alist '("" "natbib" "") t)
+;;(add-to-list 'org-latex-default-packages-alist
+;;             '("linktocpage,pdfstartview=FitH,colorlinks,
+;;linkcolor=blue,anchorcolor=blue,
+;;citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
+;;               "hyperref" nil)
+;;            t)
+
+;; setup org-ref
+(setq org-ref-bibliography-notes "~/Desktop/org-ref-example/notes.org"
+      org-ref-default-bibliography '("~/Desktop/org-ref-example/references.bib")
+      org-ref-pdf-directory "~/Desktop/org-ref-example/bibtex-pdfs/")
+
+(unless (file-exists-p org-ref-pdf-directory)
+  (make-directory org-ref-pdf-directory t))
+
+ ;; (use-package org-ref :ensure t     :after org)
+ ;; (use-package org-ref-pdf     :ensure nil     :after org)
+ ;; (use-package org-ref-url-utils     :ensure nil     :after org)
+
+(require 'org-ref)
+(require 'org-ref-pdf)
+(require 'org-ref-url-utils)
+
+
+;; Citation Styles
+(defun harvard-cite (key page)
+  (interactive (list (completing-read "Cite: " (orhc-bibtex-candidates))
+                     (read-string "Page: ")))
+
+
+  (insert
+   (org-make-link-string (format "cite:%s"
+                                 (cdr (assoc
+                                       "=key="
+                                       (cdr (assoc key (orhc-bibtex-candidates))))))
+                         page)))
