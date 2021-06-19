@@ -809,31 +809,47 @@
 ;;            t)
 
 ;; setup org-ref
-(setq org-ref-bibliography-notes "~/Desktop/org-ref-example/notes.org"
-      org-ref-default-bibliography '("~/Desktop/org-ref-example/references.bib")
-      org-ref-pdf-directory "~/Desktop/org-ref-example/bibtex-pdfs/")
+  (setq org-ref-bibliography-notes "~/Desktop/org-ref-example/notes.org"
+        org-ref-default-bibliography '("~/Desktop/org-ref-example/references.bib")
+        org-ref-pdf-directory "~/Desktop/org-ref-example/bibtex-pdfs/")
 
-(unless (file-exists-p org-ref-pdf-directory)
-  (make-directory org-ref-pdf-directory t))
+  (unless (file-exists-p org-ref-pdf-directory)
+    (make-directory org-ref-pdf-directory t))
 
- ;; (use-package org-ref :ensure t     :after org)
- ;; (use-package org-ref-pdf     :ensure nil     :after org)
- ;; (use-package org-ref-url-utils     :ensure nil     :after org)
+   ;; (use-package org-ref :ensure t     :after org)
+   ;; (use-package org-ref-pdf     :ensure nil     :after org)
+   ;; (use-package org-ref-url-utils     :ensure nil     :after org)
 
-(require 'org-ref)
-(require 'org-ref-pdf)
-(require 'org-ref-url-utils)
-
-
-;; Citation Styles
-(defun harvard-cite (key page)
-  (interactive (list (completing-read "Cite: " (orhc-bibtex-candidates))
-                     (read-string "Page: ")))
+(use-package org-ref :ensure t     :after org)
+  ;;  (require 'org-ref )
+  (require 'org-ref-pdf)
+  (require 'org-ref-url-utils)
 
 
-  (insert
-   (org-make-link-string (format "cite:%s"
-                                 (cdr (assoc
-                                       "=key="
-                                       (cdr (assoc key (orhc-bibtex-candidates))))))
-                         page)))
+  ;; Citation Styles
+  (defun harvard-cite (key page)
+    (interactive (list (completing-read "Cite: " (orhc-bibtex-candidates))
+                       (read-string "Page: ")))
+
+
+    (insert
+     (org-make-link-string (format "cite:%s"
+                                   (cdr (assoc
+                                         "=key="
+                                         (cdr (assoc key (orhc-bibtex-candidates))))))
+                           page)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(helm-minibuffer-history-key "M-p")
+ '(package-selected-packages
+   (quote
+    (org-ref which-key vterm visual-fill-column use-package unicode-fonts typescript-mode rainbow-delimiters plantuml-mode org-plus-contrib org-bullets notmuch no-littering magit lsp-ui lsp-ivy ivy-rich helpful general evil-nerd-commenter evil-collection eterm-256color eshell-git-prompt doom-themes doom-modeline dired-single dired-open dired-hide-dotfiles dap-mode counsel-projectile company-box calfw-ical calfw bbdb auto-package-update all-the-icons-dired))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

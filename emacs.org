@@ -1338,38 +1338,39 @@ Dial the GC threshold back down so that garbage collection happens more frequent
 
 ** Org-Ref
 #+begin_src emacs-lisp
+    
+    
+      ;; setup org-ref
+    (setq org-ref-bibliography-notes "~/Desktop/org-ref-example/notes.org"
+          org-ref-default-bibliography '("~/Desktop/org-ref-example/references.bib")
+          org-ref-pdf-directory "~/Desktop/org-ref-example/bibtex-pdfs/")
+    
+    (unless (file-exists-p org-ref-pdf-directory)
+      (make-directory org-ref-pdf-directory t))
+    
+     ;; (use-package org-ref :ensure t     :after org)
+     ;; (use-package org-ref-pdf     :ensure nil     :after org)
+     ;; (use-package org-ref-url-utils     :ensure nil     :after org)
   
-  
-    ;; setup org-ref
-  (setq org-ref-bibliography-notes "~/Desktop/org-ref-example/notes.org"
-        org-ref-default-bibliography '("~/Desktop/org-ref-example/references.bib")
-        org-ref-pdf-directory "~/Desktop/org-ref-example/bibtex-pdfs/")
-  
-  (unless (file-exists-p org-ref-pdf-directory)
-    (make-directory org-ref-pdf-directory t))
-  
-   ;; (use-package org-ref :ensure t     :after org)
-   ;; (use-package org-ref-pdf     :ensure nil     :after org)
-   ;; (use-package org-ref-url-utils     :ensure nil     :after org)
-  
-  (require 'org-ref)
-  (require 'org-ref-pdf)
-  (require 'org-ref-url-utils)
-  
-  
-  ;; Citation Styles
-  (defun harvard-cite (key page)
-    (interactive (list (completing-read "Cite: " (orhc-bibtex-candidates))
-                       (read-string "Page: ")))
-  
-  
-    (insert
-     (org-make-link-string (format "cite:%s"
-                                   (cdr (assoc
-                                         "=key="
-                                         (cdr (assoc key (orhc-bibtex-candidates))))))
-                           page)))
-  
-  
+  (use-package org-ref :ensure t     :after org)
+    ;;  (require 'org-ref )
+    (require 'org-ref-pdf)
+    (require 'org-ref-url-utils)
+    
+    
+    ;; Citation Styles
+    (defun harvard-cite (key page)
+      (interactive (list (completing-read "Cite: " (orhc-bibtex-candidates))
+                         (read-string "Page: ")))
+    
+    
+      (insert
+       (org-make-link-string (format "cite:%s"
+                                     (cdr (assoc
+                                           "=key="
+                                           (cdr (assoc key (orhc-bibtex-candidates))))))
+                             page)))
+    
+    
 #+end_src
 
