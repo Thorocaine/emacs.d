@@ -1,4 +1,4 @@
-+TITLE Emacs Configuration
+TITLE Emacs Configuration
 #+AUTHOR: Jonathan Peel
 #+STARTUP: overview
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes~~
@@ -15,8 +15,8 @@ The following variables are used to tweak some of the configuration pieces for u
 #+begin_src emacs-lisp
 
   (cond
-   ((eq system-type 'windows-nt) (setq my/org-dir "~/Dropbox/Apps/MobileOrg/"))
-    (t (setq my/org-dir "/mnt/c/Users/me/Dropbox/Apps/MobileOrg/"))
+   ((eq system-type 'windows-nt) (setq my/org-dir "~/OneDrive/org/"))
+    (t (setq my/org-dir "/mnt/c/Users/me/OneDrive/org/"))
   )
 
 #+end_src
@@ -143,28 +143,32 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 ** Font Configuration
 
 #+begin_src emacs-lisp 
-  
-  (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
-  (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
-  (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
-  
-  
-    (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
-  
-    (set-fontset-font t 'symbol "Emoji One")
-    (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Emoji One"))
-       ;;(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Cantarell"))
-  
-  (setq unicode-fonts-block-font-mapping
-        '(("Emoticons" ("Emoji One" "Noto Color Emoji")))
-        unicode-fonts-fontset-names '("fontset-default"))
-  
-           ;; ("Apple Color Emoji" "Symbola" "Quivira")))
+    
+    (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+    (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
+    (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
+    
+    
+      (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
+    
+  ;; (set-fontset-font t 'symbol "Noto Color Emoji") ;; "Emoji One")
+  ;; (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Noto Color Emoji")) ;; "Emoji One"))
+         ;;(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Cantarell"))
+    
+  ;;  (setq unicode-fonts-block-font-mapping
+  ;;        '(("Emoticons" ("Noto Color Emoji")))
+          ;;'(("Emoticons" ("Emoji One" "Noto Color Emoji")))
+  ;;        unicode-fonts-fontset-names '("fontset-default"))
+    
+    (use-package emojify
+      :hook (after-init . global-emojify-mode))
+    
+             ;; ("Apple Color Emoji" "Symbola" "Quivira")))
   #+end_src
 
-☹☹ ☃ 😃
-:) :D :(
-
+Emoji Test
+😁😍😋❤💚💙💜🖤
+:za::ru::cn:
 
 ** Completions (with Vertico)
 
@@ -299,13 +303,13 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 *NOTE:* The first time you load your configuration on a new machine, you'll need to run `M-x all-the-icons-install-fonts` so that mode line icons display correctly.
 
 #+begin_src emacs-lisp
-
-(use-package all-the-icons)
-
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
-
+  
+  (use-package all-the-icons)
+  
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom ((doom-modeline-height 15)))
+  
 #+end_src
 
 ** Which Key
@@ -1335,7 +1339,11 @@ Dial the GC threshold back down so that garbage collection happens more frequent
   
 #+end_src
 
-
+#+begin_src emacs-lisp
+  
+;;  (add-to-list 'org-file-apps '("\\.pdf" . "wslview %s"))
+  
+#+end_src
 ** Org-Ref
 #+begin_src emacs-lisp
     

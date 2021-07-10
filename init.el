@@ -1,6 +1,6 @@
 (cond
- ((eq system-type 'windows-nt) (setq my/org-dir "~/Dropbox/Apps/MobileOrg/"))
-  (t (setq my/org-dir "/mnt/c/Users/me/Dropbox/Apps/MobileOrg/"))
+ ((eq system-type 'windows-nt) (setq my/org-dir "~/OneDrive/org/"))
+  (t (setq my/org-dir "/mnt/c/Users/me/OneDrive/org/"))
 )
 
 ;; The default is 800 kilobytes.  Measured in bytes.
@@ -83,21 +83,25 @@
 (global-display-line-numbers-mode t)
 
 (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
+  (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
+  (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
 
 
-  (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
+    (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
 
-  (set-fontset-font t 'symbol "Emoji One")
-  (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Emoji One"))
-     ;;(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Cantarell"))
+;; (set-fontset-font t 'symbol "Noto Color Emoji") ;; "Emoji One")
+;; (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Noto Color Emoji")) ;; "Emoji One"))
+       ;;(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Cantarell"))
 
-(setq unicode-fonts-block-font-mapping
-      '(("Emoticons" ("Emoji One" "Noto Color Emoji")))
-      unicode-fonts-fontset-names '("fontset-default"))
+;;  (setq unicode-fonts-block-font-mapping
+;;        '(("Emoticons" ("Noto Color Emoji")))
+        ;;'(("Emoticons" ("Emoji One" "Noto Color Emoji")))
+;;        unicode-fonts-fontset-names '("fontset-default"))
 
-         ;; ("Apple Color Emoji" "Symbola" "Quivira")))
+  (use-package emojify
+    :hook (after-init . global-emojify-mode))
+
+           ;; ("Apple Color Emoji" "Symbola" "Quivira")))
 
 ;; (use-package vertico
 ;;   :ensure t
@@ -808,6 +812,8 @@
 ;;               "hyperref" nil)
 ;;            t)
 
+;;  (add-to-list 'org-file-apps '("\\.pdf" . "wslview %s"))
+
 ;; setup org-ref
   (setq org-ref-bibliography-notes "~/Desktop/org-ref-example/notes.org"
         org-ref-default-bibliography '("~/Desktop/org-ref-example/references.bib")
@@ -838,18 +844,3 @@
                                          "=key="
                                          (cdr (assoc key (orhc-bibtex-candidates))))))
                            page)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(helm-minibuffer-history-key "M-p")
- '(package-selected-packages
-   (quote
-    (org-ref which-key vterm visual-fill-column use-package unicode-fonts typescript-mode rainbow-delimiters plantuml-mode org-plus-contrib org-bullets notmuch no-littering magit lsp-ui lsp-ivy ivy-rich helpful general evil-nerd-commenter evil-collection eterm-256color eshell-git-prompt doom-themes doom-modeline dired-single dired-open dired-hide-dotfiles dap-mode counsel-projectile company-box calfw-ical calfw bbdb auto-package-update all-the-icons-dired))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
