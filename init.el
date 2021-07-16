@@ -1,7 +1,15 @@
-(cond
- ((eq system-type 'windows-nt) (setq my/org-dir "~/OneDrive/org/"))
-  (t (setq my/org-dir "/mnt/c/Users/me/OneDrive/org/"))
-)
+(defun my/set-win-paths ()
+  (setq my/org-dir "~/OneDrive/org/")
+  (setq my/emacs-config "~/AppData/Roaming/.emacs.d/emacs.org"))
+
+(defun my/set-wsl-paths ()
+  (setq my/org-dir "/mnt/c/Users/me/OneDrive/org/")
+  (setq my/emacs-config "~/.emacs.d/emacs.org"))
+
+  (cond
+   ((eq system-type 'windows-nt) (my/set-win-paths))
+    (t (my/set-wsl-paths))
+  )
 
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 100 1000 1000))
@@ -159,7 +167,7 @@
             (rune/leader-keys
               "t"  '(:ignore t :which-key "toggles")
               "tt" '(counsel-load-theme :which-key "choose theme")
-              "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/emacs.org")))
+              "fde" '(lambda () (interactive) (find-file (expand-file-name my/emacs-config)) :which-key "config")
               "e"  '(:ignore t :which-key "eval")
               "eb" 'eval-buffer
               "es" 'eval-last-sexp
