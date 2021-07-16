@@ -1,6 +1,6 @@
 (defun my/set-win-paths ()
-  (setq my/org-dir "~/OneDrive/org/")
-  (setq my/emacs-config "~/AppData/Roaming/.emacs.d/emacs.org"))
+  (setq my/org-dir "C:/users/me/OneDrive/org/")
+  (setq my/emacs-config "C:/users/me/AppData/Roaming/.emacs.d/emacs.org"))
 
 (defun my/set-wsl-paths ()
   (setq my/org-dir "/mnt/c/Users/me/OneDrive/org/")
