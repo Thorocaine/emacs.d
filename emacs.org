@@ -1384,12 +1384,12 @@ Org ref default paths should be different in WSL and Windoes.
   
   (defun my/set-win-org-ref-paths ()
     (setq org-ref-bibliography-notes "C:/users/me/my-bsc/references/notes.org"
-          org-ref-default-bibliography '("C:/users/me/my-bsc/references/notes.org/references.bib")
+          org-ref-default-bibliography '("C:/users/me/my-bsc/references/references.bib")
           org-ref-pdf-directory "C:/users/me/my-bsc/references/bibtex-pdfs/"))
   
   (defun my/set-wsl-org-ref-paths ()
     (setq org-ref-bibliography-notes "~/my-bsc/references/notes.org"
-          org-ref-default-bibliography '("~/my-bsc/references/notes.org/references.bib")
+          org-ref-default-bibliography '("~/my-bsc/references/references.bib")
           org-ref-pdf-directory "~/my-bsc/references/bibtex-pdfs/"))
   
   (cond
