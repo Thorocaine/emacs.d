@@ -314,6 +314,13 @@
 (setq user-mail-address "jonathanp@polymorphic.group"
       user-full-name "Jonathan Peel")
 
+(use-package yasnippet
+     :ensure t
+     :init
+     (yas-global-mode 1)
+     :config
+     (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
+
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -555,8 +562,10 @@
    'org-babel-load-languages
    '((emacs-lisp . t)
      (ditaa      . t)
-     (plantuml   .t)
-     (python     . t)))
+     (plantuml   . t)
+     (python     . t)
+     (sql        . t)
+     ))
 
   (push '("conf-unix" . conf-unix) org-src-lang-modes)
   )

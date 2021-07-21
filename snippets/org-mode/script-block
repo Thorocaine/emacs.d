@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: script-block
+# key: src
+# --
+#+begin_src $0
+
+  $1
+  
+#+end_src

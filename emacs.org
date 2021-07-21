@@ -467,6 +467,21 @@ An address book that you can hook into your mail- and newsreader, sync with your
 
 #+end_src
 
+* Snippets (with yasnippets)
+
+#+begin_src emacs-lisp
+  
+  (use-package yasnippet
+       :ensure t
+       :init
+       (yas-global-mode 1)
+       :config
+       (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
+  
+#+end_src
+
+
+
 * Org Mode
 
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
@@ -755,20 +770,22 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
 #+end_src
 
 #+begin_src emacs-lisp
-
-  (setq org-ditaa-jar-path "~/.emacs.d/ditaa.jar")
-  (setq org-plantuml-jar-path "~/.emacs.d/plantuml.jar")
-
-  (with-eval-after-load 'org
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (ditaa      . t)
-       (plantuml   .t)
-       (python     . t)))
-
-    (push '("conf-unix" . conf-unix) org-src-lang-modes)
-    )
+  
+      (setq org-ditaa-jar-path "~/.emacs.d/ditaa.jar")
+      (setq org-plantuml-jar-path "~/.emacs.d/plantuml.jar")
+  
+      (with-eval-after-load 'org
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((emacs-lisp . t)
+           (ditaa      . t)
+           (plantuml   . t)
+           (python     . t)
+           (sql        . t)
+           ))
+  
+        (push '("conf-unix" . conf-unix) org-src-lang-modes)
+        )
 #+end_src
 
 #+begin_src emacs-lisp
@@ -813,6 +830,9 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
 #+end_src
+
+
+** Insert snippits
 
 * Development
 
