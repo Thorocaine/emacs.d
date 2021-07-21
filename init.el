@@ -831,34 +831,40 @@
 
 ;;  (add-to-list 'org-file-apps '("\\.pdf" . "wslview %s"))
 
-;; setup org-ref
-(setq org-ref-bibliography-notes "~/Desktop/org-ref-example/notes.org"
-      org-ref-default-bibliography '("~/Desktop/org-ref-example/references.bib")
-      org-ref-pdf-directory "~/Desktop/org-ref-example/bibtex-pdfs/")
+(defun my/set-win-org-ref-paths ()
+  (setq org-ref-bibliography-notes "C:/users/me/my-bsc/references/notes.org"
+        org-ref-default-bibliography '("C:/users/me/my-bsc/references/notes.org/references.bib")
+        org-ref-pdf-directory "C:/users/me/my-bsc/references/bibtex-pdfs/"))
+
+(defun my/set-wsl-org-ref-paths ()
+  (setq org-ref-bibliography-notes "~/my-bsc/references/notes.org"
+        org-ref-default-bibliography '("~/my-bsc/references/notes.org/references.bib")
+        org-ref-pdf-directory "~/my-bsc/references/bibtex-pdfs/"))
+
+(cond
+ ((eq system-type 'windows-nt) (my/set-win-org-ref-paths))
+ (t (my/set-wsl-org-ref-paths)))
 
 (unless (file-exists-p org-ref-pdf-directory)
-  (make-directory org-ref-pdf-directory t))
+(make-directory org-ref-pdf-directory t))
 
-;; (use-package org-ref :ensure t     :after org)
-;; (use-package org-ref-pdf     :ensure nil     :after org)
-;; (use-package org-ref-url-utils     :ensure nil     :after org)
+;; setup org-ref
 
 (use-package org-ref :ensure t     :after org)
-;;  (require 'org-ref )
-(require 'org-ref-pdf)
-(require 'org-ref-url-utils)
+(with-eval-after-load 'org  
+  (require 'org-ref-pdf)
+  (require 'org-ref-url-utils)
 
-;; Citation Styles
-(defun harvard-cite (key page)
-  (interactive (list (completing-read "Cite: " (orhc-bibtex-candidates))
-                     (read-string "Page: ")))
+  ;; Citation Styles
+  (defun harvard-cite (key page)
+    (interactive (list (completing-read "Cite: " (orhc-bibtex-candidates))
+                       (read-string "Page: ")))
 
-  (insert
-   (org-make-link-string (format "cite:%s"
-                                 (cdr (assoc
-                                       "=key="
-                                       (cdr (assoc key (orhc-bibtex-candidates))))))
-                         page)))
-
-;; Default citation type
-(setq org-ref-default-citation-link "citep")
+    (insert
+     (org-make-link-string (format "cite:%s"
+                                   (cdr (assoc
+                                         "=key="
+                                         (cdr (assoc key (orhc-bibtex-candidates))))))
+                           page))
+    ;; Default citation type
+    (setq org-ref-default-citation-link "citep")))
