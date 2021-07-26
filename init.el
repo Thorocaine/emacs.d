@@ -111,6 +111,22 @@
 
            ;; ("Apple Color Emoji" "Symbola" "Quivira")))
 
+
+ ;;
+
+(when (member "Symbola" (font-family-list))
+  (set-fontset-font "fontset-default" nil
+                    (font-spec :size 20 :name "Symbola")))
+
+  (when (member "Symbola" (font-family-list))
+  (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+
+  (prefer-coding-system       'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
+
 ;; (use-package vertico
 ;;   :ensure t
 ;;   :bind (:map vertico-map
@@ -173,16 +189,15 @@
               "es" 'eval-last-sexp
                "a"  '(:ignore t :which-key "app")
               "ao"  '(:ignore t :which-key "org")
+              "aoc" 'org-capture
               "aof"  '(:ignore t :which-key "files")
                "aofi" 'my/org-index
               "aofs" 'my/sleep
               "aofw" 'my/work-out
               "aox"  '(:ignore t :which-key "export")
-	    "aoxh" 'org-html-export-to-html
+            "aoxh" 'org-html-export-to-html
               "aoa" 'org-agenda
-               "g"  '(:ignore t :which-key "git")
-             "gs" 'magit-status
-              )
+                              )
          )
 
 
@@ -319,7 +334,8 @@
      :init
      (yas-global-mode 1)
      :config
-     (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
+     (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+     )
 
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
@@ -365,12 +381,15 @@
   :hook (org-mode . efs/org-mode-setup)
   :config
   ;; (add-hook 'org-mode-hook #'valign-mode)
-  (setq org-ellipsis " ▾"
-        org-hide-empasis-markers t)
-
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-date 'time)
-  (setq org-log-into-drawer t)
+  (setq org-ellipsis " ▾" org-hide-empasis-markers t)
+  (setq
+    org-fontify-done-headline t
+    org-hide-leading-stars t
+    org-pretty-entities t
+    org-odd-levels-only t
+    org-agenda-start-with-log-mode t
+    org-log-date 'time
+    org-log-into-drawer t)
 
   (setq org-agenda-files
         (list
@@ -460,18 +479,42 @@
              (org-agenda-files org-agenda-files)))))))
 
 
-   (setq org-capture-templates
-    `(("t" "Tasks / Projects")
-      ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
+
+  (efs/org-font-setup)
+  )
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○"  "●" "○" "●" "○" "●")))
+
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 110
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
+
+(with-eval-after-load 'org
+  (setq org-capture-templates
+        `(("t" "Tasks / Projects")
+          ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
            "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
-      ("j" "Journal Entries")
-      ("jj" "Journal" entry
-           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-           :clock-in :clock-resume
-           :empty-lines 1)
+          ("j" "Journal Entries")
+            ;;(concat my/org-dir "index.org")
+
+
+
+
+      ;;("jj" "Journal" entry
+      ;;     (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+      ;;     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+      ;;     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+      ;;     :clock-in :clock-resume
+      ;;     :empty-lines 1)
       ("jm" "Meeting" entry
            (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
            "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
@@ -484,27 +527,66 @@
 
       ("m" "Metrics Capture")
       ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
-       "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
+       "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)
 
+
+
+   ("jj" "Journal" entry
+    (file+olp+datetree ,(concat my/org-dir "journal.org"))
+    "\n* %<%H:%M>\t:%^{LOC|ZA}:%^{WTH|SUNNY|CLOUDY|OVERCAST|RAIN|THUNDER|STORM|SNOW}:\n%U\n%?\n\n" 
+    ;;:clock-in :clock-resume
+    :empty-lines 1)
+      )
+        )
   (define-key global-map (kbd "C-c j")
     (lambda () (interactive) (org-capture nil "jj")))
-
-  (efs/org-font-setup)
   )
 
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+(setq-default prettify-symbols-alist
+                '(("#+BEGIN_SRC"   . "†")
+                  ("#+END_SRC"     . "†")
+                  ("#+begin_src"   . "†")
+                  ("#+end_src"     . "†")
+                  ("#+BEGIN_QUOTE" . "»")
+                  ("#+END_QUOTE"   . "«")
+                  (">="            . "≥")
+                  ("=>"            . "⇨")))
+(setq prettify-symbols-unprettify-at-point 'right-edge)
+(add-hook 'org-mode-hook 'prettify-symbols-mode)
 
-(defun efs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 110
-        visual-fill-column-center-text t)
-  (visual-fill-column-mode 1))
+(use-package org-pretty-tags
+  :ensure t
+  :demand t
+  :config
+  (setq org-pretty-tags-surrogate-strings
+        (quote
+         (
+          ("ZA"       . "🇿🇦")
+          ("SUNNY"    . "☀")
+          ("CLOUDY"   . "⛅")
+          ("OVERCAST" . "☁")
+          ("RAIN"     . "🌧")
+          ("THUNDER"  . "🌩")
+          ("STORM"    . "⛈")
+          ("SNOW"     . "🌨")
 
-(use-package visual-fill-column
-  :hook (org-mode . efs/org-mode-visual-fill))
+          ;;("TOPIC" . "☆")
+          ;;("PROJEKT" . "💡")
+          ;;("SERVICE" . "✍")
+          ;;("Blog" . "✍")
+          ;;("music" . "♬")
+          ;;("security" . "🔥")
+          )))
+  (org-pretty-tags-global-mode))
+
+(use-package org-fancy-priorities
+  :diminish
+  :demand t
+  :defines org-fancy-priorities-list
+  :hook (org-mode . org-fancy-priorities-mode)
+  :config
+  (unless (char-displayable-p ?❗)
+    (setq org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL"))))
 
 ;; Disable international and religious holidays  
   (setq holiday-general-holidays nil)
@@ -681,6 +763,22 @@
 
 ;; (use-package evil-magit :after magit)
 
+
+(rune/leader-keys
+  "g"  '(:ignore t :which-key "git")
+  "gs" 'magit-status
+)
+
+(with-eval-after-load 'smerge-mode
+  (rune/leader-keys
+    "gj" 'smerge-next
+    "gk" 'smerge-previous
+    "gRET" 'smerge-keep-current
+    "gm"   'smerge-keep-mine
+    "go"   'smerge-keep-other
+    "gd"   'smerge-ediff
+ ))
+
 (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
@@ -783,6 +881,19 @@
 
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
+
+(add-to-list 'exec-path "C:/users/me/bin/hunspell/bin/")
+
+(setq ispell-program-name (locate-file "hunspell" exec-path exec-suffixes 'file-executable-p))
+
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1)))
+  (rune/leader-keys
+    "s"  '(:ignore t :which-key "fly-spell")
+    "ss" 'flyspell-correct-word-before-point
+    ))
+
+(setq ispell-local-dictionary "en_GB")
 
 (with-eval-after-load 'ox-latex
     (add-to-list 'org-latex-classes

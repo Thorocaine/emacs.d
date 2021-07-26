@@ -153,33 +153,58 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 ** Font Configuration
 
 #+begin_src emacs-lisp 
-    
+  
     (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
     (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
     (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
-    
-    
+  
+  
       (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
-    
+  
   ;; (set-fontset-font t 'symbol "Noto Color Emoji") ;; "Emoji One")
   ;; (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Noto Color Emoji")) ;; "Emoji One"))
          ;;(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Cantarell"))
-    
+  
   ;;  (setq unicode-fonts-block-font-mapping
   ;;        '(("Emoticons" ("Noto Color Emoji")))
           ;;'(("Emoticons" ("Emoji One" "Noto Color Emoji")))
   ;;        unicode-fonts-fontset-names '("fontset-default"))
-    
+  
     (use-package emojify
       :hook (after-init . global-emojify-mode))
-    
+  
              ;; ("Apple Color Emoji" "Symbola" "Quivira")))
+  
+  
+   ;; 
   #+end_src
 
 Emoji Test
 😁😍😋❤💚💙💜🖤
 :za::ru::cn:
 
+** Beutify
+
+from [[https://mstempl.netlify.app/post/beautify-org-mode/]]
+
+#+begin_src emacs-lisp
+  
+    (when (member "Symbola" (font-family-list))
+    (set-fontset-font "fontset-default" nil
+                      (font-spec :size 20 :name "Symbola")))
+  
+    (when (member "Symbola" (font-family-list))
+    (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+  
+    (prefer-coding-system       'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8)
+  
+  
+  
+#+end_src
 ** Completions (with Vertico)
 
 
@@ -209,33 +234,34 @@ Emoji Test
   
 #+end_src
 
+
 * Keybinding Configuration
 
 #+begin_src emacs-lisp
-
+  
     ;; (defun my/open-index ()
     ;;   "Index"
     ;;   (interactive)
     ;;   (find-file (expand-file-name "~/Dropbox/Apps/MobileOrg/index.org"))
     ;;   )
-
+  
   (defun my/open (a)
     (find-file (expand-file-name a))
     (message "Open")
     )
-
-
+  
+  
   (defun my/org-file (name) (concat my/org-dir name))
   (defun my/open-org (name) (my/open (my/org-file name)))
-
-
+  
+  
     (defun my/org-index () (interactive) (my/open-org "index.org") )
     (defun my/sleep () (interactive) (my/open-org "sleep.org") )
     (defun my/work-out () (interactive) (my/open-org "workout.org") )
-
-
+  
+  
         (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
+  
           (use-package general
             :after evil
             :config
@@ -243,7 +269,7 @@ Emoji Test
                 :keymaps '(normal insert visual emacs)
                 :prefix "SPC"
                 :global-prefix "C-SPC")
-
+  
               (rune/leader-keys
                 "t"  '(:ignore t :which-key "toggles")
                 "tt" '(counsel-load-theme :which-key "choose theme")
@@ -253,45 +279,44 @@ Emoji Test
                 "es" 'eval-last-sexp
                  "a"  '(:ignore t :which-key "app")
                 "ao"  '(:ignore t :which-key "org")
+                "aoc" 'org-capture
                 "aof"  '(:ignore t :which-key "files")
                  "aofi" 'my/org-index
                 "aofs" 'my/sleep
                 "aofw" 'my/work-out
                 "aox"  '(:ignore t :which-key "export")
-	      "aoxh" 'org-html-export-to-html
+              "aoxh" 'org-html-export-to-html
                 "aoa" 'org-agenda
-                 "g"  '(:ignore t :which-key "git")
-               "gs" 'magit-status
-                )
+                                )
            )
-
-
+  
+  
           (use-package evil
             :init
             (setq evil-want-integration t)
             (setq evil-want-keybinding nil)
             (setq evil-want-C-u-scroll t)
             (setq evil-want-C-i-jump nil)
-
+  
             :config
             (evil-mode 1)
             (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
             (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-
+  
             ;; Use visual line motions even outside of visual-line-mode buffers
             (evil-global-set-key 'motion "j" 'evil-next-visual-line)
             (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
+  
             (evil-set-initial-state 'messages-buffer-mode 'normal)
             (evil-set-initial-state 'dashboard-mode 'normal)
           )
-
+  
           (use-package evil-collection
             :after evil
             :config
             (evil-collection-init))
-
-
+  
+  
  #+end_src
  
 * UI Configuration
@@ -470,21 +495,19 @@ An address book that you can hook into your mail- and newsreader, sync with your
 * Snippets (with yasnippets)
 
 #+begin_src emacs-lisp
-  
-  (use-package yasnippet
-       :ensure t
-       :init
-       (yas-global-mode 1)
-       :config
-       (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
-  
+    
+    (use-package yasnippet
+         :ensure t
+         :init
+         (yas-global-mode 1)
+         :config
+         (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+         )
+    
 #+end_src
 
 
-
 * Org Mode
-
-[[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
 
 ** Font config
 
@@ -520,6 +543,7 @@ An address book that you can hook into your mail- and newsreader, sync with your
     )
 #+end_src
 
+
 ** Basic config
 
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.  There's a lot to unpack in here so I'd recommend watching the videos for [[https://youtu.be/VcgjTEa0kU4][Part 5]] and [[https://youtu.be/PNE-mgkZ6HM][Part 6]] for a full explanation.
@@ -541,12 +565,15 @@ This section contains the basic configuration for =org-mode= plus the configurat
     :hook (org-mode . efs/org-mode-setup)
     :config
     ;; (add-hook 'org-mode-hook #'valign-mode)
-    (setq org-ellipsis " ▾"
-          org-hide-empasis-markers t)
-  
-    (setq org-agenda-start-with-log-mode t)
-    (setq org-log-date 'time)
-    (setq org-log-into-drawer t)
+    (setq org-ellipsis " ▾" org-hide-empasis-markers t)
+    (setq
+      org-fontify-done-headline t
+      org-hide-leading-stars t
+      org-pretty-entities t
+      org-odd-levels-only t
+      org-agenda-start-with-log-mode t
+      org-log-date 'time
+      org-log-into-drawer t)
   
     (setq org-agenda-files
           (list
@@ -636,34 +663,6 @@ This section contains the basic configuration for =org-mode= plus the configurat
                (org-agenda-files org-agenda-files)))))))
   
   
-     (setq org-capture-templates
-      `(("t" "Tasks / Projects")
-        ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
-             "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-  
-        ("j" "Journal Entries")
-        ("jj" "Journal" entry
-             (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-             "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-             ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-             :clock-in :clock-resume
-             :empty-lines 1)
-        ("jm" "Meeting" entry
-             (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-             "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-             :clock-in :clock-resume
-             :empty-lines 1)
-  
-        ("w" "Workflows")
-        ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-             "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
-  
-        ("m" "Metrics Capture")
-        ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
-         "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
-  
-    (define-key global-map (kbd "C-c j")
-      (lambda () (interactive) (org-capture nil "jj")))
   
     (efs/org-font-setup)
     )
@@ -681,7 +680,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
     :after org
     :hook (org-mode . org-bullets-mode)
     :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+    (org-bullets-bullet-list '("◉" "○"  "●" "○" "●" "○" "●")))
 
 #+end_src
 
@@ -699,6 +698,120 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
     :hook (org-mode . efs/org-mode-visual-fill))
 
 #+end_src
+
+** Capture Templates
+
+#+begin_src emacs-lisp
+            
+            (with-eval-after-load 'org
+              (setq org-capture-templates
+                    `(("t" "Tasks / Projects")
+                      ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
+                       "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+            
+                      ("j" "Journal Entries")
+                        ;;(concat my/org-dir "index.org")
+            
+            
+            
+            
+                  ;;("jj" "Journal" entry
+                  ;;     (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+                  ;;     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+                  ;;     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+                  ;;     :clock-in :clock-resume
+                  ;;     :empty-lines 1)
+                  ("jm" "Meeting" entry
+                       (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+                       "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+                       :clock-in :clock-resume
+                       :empty-lines 1)
+            
+                  ("w" "Workflows")
+                  ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+                       "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+            
+                  ("m" "Metrics Capture")
+                  ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
+                   "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)
+            
+            
+            
+               ("jj" "Journal" entry
+                (file+olp+datetree ,(concat my/org-dir "journal.org"))
+                "\n* %<%H:%M>\t:%^{LOC|ZA}:%^{WTH|SUNNY|CLOUDY|OVERCAST|RAIN|THUNDER|STORM|SNOW}:\n%U\n%?\n\n" 
+                ;;:clock-in :clock-resume
+                :empty-lines 1)
+                  )
+                    )
+              (define-key global-map (kbd "C-c j")
+                (lambda () (interactive) (org-capture nil "jj")))
+              )
+            
+#+end_src
+
+** Make pretty
+
+*** Prettyfy
+
+#+begin_src emacs-lisp
+      (setq-default prettify-symbols-alist
+                    '(("#+BEGIN_SRC"   . "†")
+                      ("#+END_SRC"     . "†")
+                      ("#+begin_src"   . "†")
+                      ("#+end_src"     . "†")
+                      ("#+BEGIN_QUOTE" . "»")
+                      ("#+END_QUOTE"   . "«")
+                      (">="            . "≥")
+                      ("=>"            . "⇨")))
+    (setq prettify-symbols-unprettify-at-point 'right-edge)
+    (add-hook 'org-mode-hook 'prettify-symbols-mode)
+#+end_src
+
+*** Pretty Tags
+            
+#+begin_src emacs-lisp
+            (use-package org-pretty-tags
+              :ensure t
+              :demand t
+              :config
+              (setq org-pretty-tags-surrogate-strings
+                    (quote
+                     (
+                      ("ZA"       . "🇿🇦")
+                      ("SUNNY"    . "☀")
+                      ("CLOUDY"   . "⛅")
+                      ("OVERCAST" . "☁")
+                      ("RAIN"     . "🌧")
+                      ("THUNDER"  . "🌩")
+                      ("STORM"    . "⛈")
+                      ("SNOW"     . "🌨")
+            
+                      ;;("TOPIC" . "☆")
+                      ;;("PROJEKT" . "💡")
+                      ;;("SERVICE" . "✍")
+                      ;;("Blog" . "✍")
+                      ;;("music" . "♬")
+                      ;;("security" . "🔥")
+                      )))
+              (org-pretty-tags-global-mode))
+            
+#+end_src
+
+*** Fancy prioroties
+#+begin_src emacs-lisp
+  
+  (use-package org-fancy-priorities
+    :diminish
+    :demand t
+    :defines org-fancy-priorities-list
+    :hook (org-mode . org-fancy-priorities-mode)
+    :config
+    (unless (char-displayable-p ?❗)
+      (setq org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL"))))
+  
+#+end_src
+
 ** Agenda
 *** Holidays
 #+begin_src emacs-lisp
@@ -1019,17 +1132,42 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
 [[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly using Magit's command panel system.
 
 #+begin_src emacs-lisp
-
-  (use-package magit
-    :commands magit-status
-    :custom
-    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
-    )
-
-  ;; (use-package evil-magit :after magit)
-
+  
+     (use-package magit
+       :commands magit-status
+       :custom
+       (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+       )
+  
+     ;; (use-package evil-magit :after magit)
+  
+  
+     (rune/leader-keys
+       "g"  '(:ignore t :which-key "git")
+       "gs" 'magit-status
+     )
+  
+  
+  
  #+end_src
 
+** Smerge
+
+#+begin_src emacs-lisp
+  
+  (with-eval-after-load 'smerge-mode
+    (rune/leader-keys
+      "gj" 'smerge-next
+      "gk" 'smerge-previous
+      "gRET" 'smerge-keep-current
+      "gm"   'smerge-keep-mine
+      "go"   'smerge-keep-other
+      "gd"   'smerge-ediff
+   ))
+  
+  
+  
+ #+end_src
 ** Commenting
 
 Emacs' built in commenting functionality =comment-dwim= (usually bound to =M-;=) doesn't always comment things in the way you might expect so we use [[https://github.com/redguardtoo/evil-nerd-commenter][evil-nerd-commenter]] to provide a more familiar behavior.  I've bound it to =M-/= since other editors sometimes use this binding but you could also replace Emacs' =M-;= binding with this command.
@@ -1318,7 +1456,26 @@ Dial the GC threshold back down so that garbage collection happens more frequent
 
 
 
+* Spell Checking
+** Fly-spell 
+let me insoit something wrong...
 
+#+begin_src emacs-lisp
+  
+  (add-to-list 'exec-path "C:/users/me/bin/hunspell/bin/")
+  
+  (setq ispell-program-name (locate-file "hunspell" exec-path exec-suffixes 'file-executable-p))
+  
+  (dolist (hook '(text-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode 1)))
+    (rune/leader-keys
+      "s"  '(:ignore t :which-key "fly-spell")
+      "ss" 'flyspell-correct-word-before-point
+      ))
+  
+  (setq ispell-local-dictionary "en_GB")
+  
+       #+end_src
 * Writing for school
 ** LaTeX exports
 #+begin_src emacs-lisp
