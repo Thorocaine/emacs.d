@@ -239,11 +239,11 @@ from [[https://mstempl.netlify.app/post/beautify-org-mode/]]
 
 #+begin_src emacs-lisp
   
-    ;; (defun my/open-index ()
-    ;;   "Index"
-    ;;   (interactive)
-    ;;   (find-file (expand-file-name "~/Dropbox/Apps/MobileOrg/index.org"))
-    ;;   )
+  ;; (defun my/open-index ()
+  ;;   "Index"
+  ;;   (interactive)
+  ;;   (find-file (expand-file-name "~/Dropbox/Apps/MobileOrg/index.org"))
+  ;;   )
   
   (defun my/open (a)
     (find-file (expand-file-name a))
@@ -254,41 +254,41 @@ from [[https://mstempl.netlify.app/post/beautify-org-mode/]]
   (defun my/org-file (name) (concat my/org-dir name))
   (defun my/open-org (name) (my/open (my/org-file name)))
   
+  (defun my/org-index () (interactive) (my/open-org "index.org") )
+  (defun my/sleep () (interactive) (my/open-org "sleep.org") )
+  (defun my/work-out () (interactive) (my/open-org "workout.org") )
+  (defun my/journal () (interactive) (my/open-org "Journal.org") )
   
-    (defun my/org-index () (interactive) (my/open-org "index.org") )
-    (defun my/sleep () (interactive) (my/open-org "sleep.org") )
-    (defun my/work-out () (interactive) (my/open-org "workout.org") )
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   
+  (use-package general
+    :after evil
+    :config
+    (general-create-definer rune/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
   
-        (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  
-          (use-package general
-            :after evil
-            :config
-              (general-create-definer rune/leader-keys
-                :keymaps '(normal insert visual emacs)
-                :prefix "SPC"
-                :global-prefix "C-SPC")
-  
-              (rune/leader-keys
-                "t"  '(:ignore t :which-key "toggles")
-                "tt" '(counsel-load-theme :which-key "choose theme")
-                "fde" '(lambda () (interactive) (find-file (expand-file-name my/emacs-config)) :which-key "config")
-                "e"  '(:ignore t :which-key "eval")
-                "eb" 'eval-buffer
-                "es" 'eval-last-sexp
-                 "a"  '(:ignore t :which-key "app")
-                "ao"  '(:ignore t :which-key "org")
-                "aoc" 'org-capture
-                "aof"  '(:ignore t :which-key "files")
-                 "aofi" 'my/org-index
-                "aofs" 'my/sleep
-                "aofw" 'my/work-out
-                "aox"  '(:ignore t :which-key "export")
-              "aoxh" 'org-html-export-to-html
-                "aoa" 'org-agenda
-                                )
-           )
+    (rune/leader-keys
+      "t"  '(:ignore t :which-key "toggles")
+      "tt" '(counsel-load-theme :which-key "choose theme")
+      "fde" '(lambda () (interactive) (find-file (expand-file-name my/emacs-config)) :which-key "config")
+      "e"  '(:ignore t :which-key "eval")
+      "eb" 'eval-buffer
+      "es" 'eval-last-sexp
+      "a"  '(:ignore t :which-key "app")
+      "ao"  '(:ignore t :which-key "org")
+      "aoc" 'org-capture
+      "aof"  '(:ignore t :which-key "files")
+      "aofi" 'my/org-index
+      "aofj" 'my/journal
+      "aofs" 'my/sleep
+      "aofw" 'my/work-out
+      "aox"  '(:ignore t :which-key "export")
+      "aoxh" 'org-html-export-to-html
+      "aoa" 'org-agenda
+      )
+    )
   
   
           (use-package evil
@@ -702,52 +702,54 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
 ** Capture Templates
 
 #+begin_src emacs-lisp
-            
-            (with-eval-after-load 'org
-              (setq org-capture-templates
-                    `(("t" "Tasks / Projects")
-                      ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
-                       "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-            
-                      ("j" "Journal Entries")
-                        ;;(concat my/org-dir "index.org")
-            
-            
-            
-            
-                  ;;("jj" "Journal" entry
-                  ;;     (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-                  ;;     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-                  ;;     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-                  ;;     :clock-in :clock-resume
-                  ;;     :empty-lines 1)
-                  ("jm" "Meeting" entry
-                       (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-                       "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-                       :clock-in :clock-resume
-                       :empty-lines 1)
-            
-                  ("w" "Workflows")
-                  ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-                       "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
-            
-                  ("m" "Metrics Capture")
-                  ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
-                   "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)
-            
-            
-            
-               ("jj" "Journal" entry
-                (file+olp+datetree ,(concat my/org-dir "journal.org"))
-                "\n* %<%H:%M>\t:%^{LOC|ZA}:%^{WTH|SUNNY|CLOUDY|OVERCAST|RAIN|THUNDER|STORM|SNOW}:\n%U\n%?\n\n" 
-                ;;:clock-in :clock-resume
-                :empty-lines 1)
-                  )
-                    )
-              (define-key global-map (kbd "C-c j")
-                (lambda () (interactive) (org-capture nil "jj")))
-              )
-            
+  
+  (with-eval-after-load 'org
+    (setq org-capture-templates
+          `(
+  
+            ;;("t" "Tasks / Projects")
+            ;;("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
+            ;; "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+  
+            ;;("j" "Journal Entries")
+              ;;(concat my/org-dir "index.org")
+  
+  
+  
+  
+        ;;("jj" "Journal" entry
+        ;;     (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+        ;;     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+        ;;     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+        ;;     :clock-in :clock-resume
+        ;;     :empty-lines 1)
+;;        ("jm" "Meeting" entry
+  ;;           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+    ;;         "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+      ;;       :clock-in :clock-resume
+        ;;     :empty-lines 1)
+  
+;;        ("w" "Workflows")
+  ;;      ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+    ;;         "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+  
+      ;;  ("m" "Metrics Capture")
+       ;; ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
+        ;; "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)
+  
+  ("j" "Journal" entry (file+olp+datetree ,(concat my/org-dir "journal.org")) "* %U\n%?")
+  
+     ;;("jj" "Journal" entry
+     ;; (file+olp+datetree ,(concat my/org-dir "journal.org"))
+     ;; "* %U :%^{LOC|ZA}:%^{WTH|SUNNY|CLOUDY|OVERCAST|RAIN|THUNDER|STORM|SNOW}:\n%?" 
+     ;; :empty-lines 0)
+  
+        )
+          )
+    (define-key global-map (kbd "C-c j")
+      (lambda () (interactive) (org-capture nil "jj")))
+    )
+  
 #+end_src
 
 ** Make pretty
