@@ -370,7 +370,7 @@
 ;; Org Mode Configuration ------------------------------------------------------
 
 (defun efs/org-mode-setup ()
-  (org-indent-mode)
+  ;;(org-indent-mode)
   (variable-pitch-mode 1)
   (visual-line-mode 1))
 
@@ -386,7 +386,7 @@
     org-fontify-done-headline t
     org-hide-leading-stars t
     org-pretty-entities t
-    org-odd-levels-only t
+    org-odd-levels-only nil
     org-agenda-start-with-log-mode t
     org-log-date 'time
     org-log-into-drawer t)
@@ -498,51 +498,56 @@
   :hook (org-mode . efs/org-mode-visual-fill))
 
 (with-eval-after-load 'org
-    (setq org-capture-templates
-          `(
-  
-            ;;("t" "Tasks / Projects")
-            ;;("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
-            ;; "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-  
-            ;;("j" "Journal Entries")
-              ;;(concat my/org-dir "index.org")
-  
-  
-  
-  
-        ;;("jj" "Journal" entry
-        ;;     (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-        ;;     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-        ;;     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-        ;;     :clock-in :clock-resume
-        ;;     :empty-lines 1)
+  (setq org-capture-templates
+	`(
+	  ("j" "Journal" entry (file+olp+datetree ,(concat my/org-dir "journal.org"))
+	   "* %U :%^{LOC|ZA}:%^{WTH|SUNNY|CLOUDY|OVERCAST|RAIN|THUNDER|STORM|SNOW}:\n%?")
+
+	  ("s" "Sleep" table-line (file+headline ,(concat my/org-dir "sleep.org") "Sleep")
+	   "|X|X |X        |X| | | | | | | | | | | |%^{Calaries}|%^{Asleep}|%^{slept}|
+            | |%u|%^{Awake}| |X|X|X|X|X|X|X|X|X|X|X|x           |X         |X        |"
+	   :jump-to-captured t
+	   :table-line-pos "II-1"
+	   )  
+	  ))
+  (define-key global-map (kbd "C-c j")
+    (lambda () (interactive) (org-capture nil "j")))
+  )
+
+
+;;("t" "Tasks / Projects")
+;;("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
+;; "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+
+;;("j" "Journal Entries")
+;;(concat my/org-dir "index.org")
+
+;;("jj" "Journal" entry
+;;     (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+;;     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+;;     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+;;     :clock-in :clock-resume
+;;     :empty-lines 1)
 ;;        ("jm" "Meeting" entry
-  ;;           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-    ;;         "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-      ;;       :clock-in :clock-resume
-        ;;     :empty-lines 1)
-  
+;;           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+;;         "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+;;       :clock-in :clock-resume
+;;     :empty-lines 1)
+
 ;;        ("w" "Workflows")
-  ;;      ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-    ;;         "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
-  
-      ;;  ("m" "Metrics Capture")
-       ;; ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
-        ;; "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)
-  
-  ("j" "Journal" entry (file+olp+datetree ,(concat my/org-dir "journal.org")) "* %U\n%?")
-  
-     ;;("jj" "Journal" entry
-     ;; (file+olp+datetree ,(concat my/org-dir "journal.org"))
-     ;; "* %U :%^{LOC|ZA}:%^{WTH|SUNNY|CLOUDY|OVERCAST|RAIN|THUNDER|STORM|SNOW}:\n%?" 
-     ;; :empty-lines 0)
-  
-        )
-          )
-    (define-key global-map (kbd "C-c j")
-      (lambda () (interactive) (org-capture nil "jj")))
-    )
+;;      ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+;;         "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+
+	;;  ("m" "Metrics Capture")
+	 ;; ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
+	  ;; "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)
+
+
+
+;;("jj" "Journal" entry
+;; (file+olp+datetree ,(concat my/org-dir "journal.org"))
+;; "* %U :%^{LOC|ZA}:%^{WTH|SUNNY|CLOUDY|OVERCAST|RAIN|THUNDER|STORM|SNOW}:\n%?" 
+;; :empty-lines 0)
 
 (setq-default prettify-symbols-alist
                 '(("#+BEGIN_SRC"   . "†")
@@ -557,28 +562,20 @@
 (add-hook 'org-mode-hook 'prettify-symbols-mode)
 
 (use-package org-pretty-tags
+  :diminish org-pretty-tags-mode
   :ensure t
-  :demand t
   :config
   (setq org-pretty-tags-surrogate-strings
-        (quote
-         (
-          ("ZA"       . "🇿🇦")
-          ("SUNNY"    . "☀")
-          ("CLOUDY"   . "⛅")
-          ("OVERCAST" . "☁")
-          ("RAIN"     . "🌧")
-          ("THUNDER"  . "🌩")
-          ("STORM"    . "⛈")
-          ("SNOW"     . "🌨")
-
-          ;;("TOPIC" . "☆")
-          ;;("PROJEKT" . "💡")
-          ;;("SERVICE" . "✍")
-          ;;("Blog" . "✍")
-          ;;("music" . "♬")
-          ;;("security" . "🔥")
-          )))
+	'(("work"  . "⚒")
+	  ("ZA"       . "🇿🇦")
+	  ("SUNNY"    . "☀")
+	  ("CLOUDY"   . "⛅")
+	  ("OVERCAST" . "☁")
+	  ("RAIN"     . "🌧")
+	  ("THUNDER"  . "🌩")
+	  ("STORM"    . "⛈")
+	  ("SNOW"     . "🌨")
+	  ))
   (org-pretty-tags-global-mode))
 
 (use-package org-fancy-priorities
