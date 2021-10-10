@@ -154,9 +154,9 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 
 #+begin_src emacs-lisp 
   
-    (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
-    (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
-    (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
+ ;;    (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+ ;;   (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
+ ;;   (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
   
   
       (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
@@ -527,7 +527,7 @@ An address book that you can hook into your mail- and newsreader, sync with your
                     (org-level-6 . 1.1)
                     (org-level-7 . 1.1)
                     (org-level-8 . 1.1)))
-      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))
+      ;; (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))
       )
   
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way

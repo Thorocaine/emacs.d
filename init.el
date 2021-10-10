@@ -90,29 +90,29 @@
 (column-number-mode)
 (global-display-line-numbers-mode t)
 
-(set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
-  (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
-  (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
+;;    (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+;;   (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height runemacs/default-font-size)
+;;   (set-face-attribute 'variable-pitch nil :font "Cantarell" :height runemacs/default-font-size :weight 'regular)
 
 
-    (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
+     (use-package unicode-fonts :ensure t :config (unicode-fonts-setup))
 
-;; (set-fontset-font t 'symbol "Noto Color Emoji") ;; "Emoji One")
-;; (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Noto Color Emoji")) ;; "Emoji One"))
-       ;;(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Cantarell"))
+ ;; (set-fontset-font t 'symbol "Noto Color Emoji") ;; "Emoji One")
+ ;; (set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Noto Color Emoji")) ;; "Emoji One"))
+        ;;(set-fontset-font t '(#x1f300 . #x1fad0) (font-spec :family "Cantarell"))
 
-;;  (setq unicode-fonts-block-font-mapping
-;;        '(("Emoticons" ("Noto Color Emoji")))
-        ;;'(("Emoticons" ("Emoji One" "Noto Color Emoji")))
-;;        unicode-fonts-fontset-names '("fontset-default"))
+ ;;  (setq unicode-fonts-block-font-mapping
+ ;;        '(("Emoticons" ("Noto Color Emoji")))
+         ;;'(("Emoticons" ("Emoji One" "Noto Color Emoji")))
+ ;;        unicode-fonts-fontset-names '("fontset-default"))
 
-  (use-package emojify
-    :hook (after-init . global-emojify-mode))
+   (use-package emojify
+     :hook (after-init . global-emojify-mode))
 
-           ;; ("Apple Color Emoji" "Symbola" "Quivira")))
+            ;; ("Apple Color Emoji" "Symbola" "Quivira")))
 
 
- ;;
+  ;;
 
 (when (member "Symbola" (font-family-list))
   (set-fontset-font "fontset-default" nil
@@ -352,7 +352,7 @@
                   (org-level-6 . 1.1)
                   (org-level-7 . 1.1)
                   (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))
+    ;; (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))
     )
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
